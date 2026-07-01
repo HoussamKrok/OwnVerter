@@ -120,7 +120,7 @@ static constexpr float32_t MAX_CURRENT = 8.0F;
 /* Size of the scope buffer for data recording */
 static constexpr uint32_t SCOPE_BUFFER_SIZE = 512;
 /* Number of channels recorded in the scope for diagnostics */
-static constexpr uint8_t SCOPE_CHANNEL_COUNT = 8;
+static constexpr uint8_t SCOPE_CHANNEL_COUNT = 9;
 
 /* State of the PWM outputs */
 static bool pwm_enable = false;
@@ -367,9 +367,9 @@ void setup_scope()
     scope.connectChannel(I2_low_value, "I2_low_value");
     scope.connectChannel(I3_low_value, "I3_low_value");
 
-    /*scope.connectChannel(V1_low_value, "V1_low_value");
-    scope.connectChannel(V2_low_value, "V2_low_value");
-    scope.connectChannel(V3_low_value, "V3_low_value");*/
+    scope.connectChannel(Vgrid_meas.a, "V1_low_value");
+    scope.connectChannel(Vgrid_meas.b, "V2_low_value");
+    scope.connectChannel(Vgrid_meas.c, "V3_low_value");
 
     scope.connectChannel(delta_duty_cycle.a, "duty_cycle_a");
     scope.connectChannel(delta_duty_cycle.b, "duty_cycle_b");
@@ -380,10 +380,10 @@ void setup_scope()
     scope.connectChannel(Vdq_ref.d, "Vd_ref");
     scope.connectChannel(Vdq.d, "Vd_in");
     scope.connectChannel(Vdq.q, "Vq_in");
-    scope.connectChannel(Idq.d, "Id_in");*/
+    scope.connectChannel(Idq.d, "Id_in");
     scope.connectChannel(Vdq_output.d, "Vd_out");
     scope.connectChannel(Vdq.d, "Vd");
-    scope.connectChannel(Vdq_ref.d, "Vdref");
+    scope.connectChannel(Vdq_ref.d, "Vdref");*/
     /*scope.connectChannel(omega, "omega");*/
     /*scope.connectChannel(state_mode_scope, "state");*/
     scope.set_delay(0.5F);
@@ -418,6 +418,8 @@ void read_measurements()
     if (meas_data != NO_VALUE) V_high = meas_data;
 
     V_high_filt = vHighFilter.calculateWithReturn(V_high);
+
+    Vn = (V1_low_value + V2_low_value + V3_low_value)/3.0F;
 
     Vgrid_meas.a = V1_low_value - Vn;
     Vgrid_meas.b = V2_low_value - Vn;
